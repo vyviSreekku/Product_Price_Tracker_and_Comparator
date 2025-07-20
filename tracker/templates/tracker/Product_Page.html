@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Page</title>
+    <link rel="stylesheet" href="{% static 'tracker/css/Product_page.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header-container">
+        <div class="header">
+            <span class="logo">WatchThatPrice</span>
+            <div class="input-wrapper">
+                <span class="search-icon"><img class="searchIcon" src="{% static 'tracker/images/search-icon.png' %}" alt="Search Icon" /></span> 
+                <input type="text" id="searchInput" placeholder="Enter product name">
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a href="{% url 'index' %}" class="nav-button">Home</a>
+            <a href="#" class="login" onclick="openLoginModal()">Login</a>
+            <span class="separator login-separator"></span>
+            <a href="#" class="register" onclick="openRegisterModal()">Register</a>
+            <div id="profileIcon" style="display: none;">
+                <i class="fas fa-user-circle"></i>
+                <span class="profile-display"></span>
+            </div>
+
+            <div id="profileOptions" class="profile-options" style="display: none;">
+                <div class="profile-info">
+                    <span class="profile-name"></span>
+                    <span class="profile-email"></span>
+                </div>
+                <div class="profile-menu">
+                    <a href="/profile" class="profile-link">
+                        <i class="fas fa-user"></i>
+                        My Profile
+                    </a>
+                    <a href="#" onclick="signOut()" class="profile-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeLoginModal()">×</span>
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+            <button class="login-btn" onclick="login()">Login</button>
+            <div class="divider"><span>or</span></div>
+            <button class="google-btn" onclick="googleLogin()">Login with Google</button>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeRegisterModal()">×</span>
+            <h2>Register</h2>
+            <input type="text" id="registerName" class="register-input" placeholder="Enter your name" required>
+            <input type="email" id="registerEmail" class="register-input" placeholder="Enter your email" required>
+            <input type="password" id="registerPassword" class="register-input" placeholder="Create a password" required>
+            <input type="password" id="registerPassword" class="register-input" placeholder="Confirm password" required>
+            <button class="register-btn" onclick="register()">Register</button>
+            <div class="divider"><span>or</span></div>
+            <button class="google-btn" onclick="googleRegister()">Register with Google</button>
+        </div>
+    </div>
+
+
+    <div class="box-container">
+        <div class="product-section box">
+            <div class="product-info">
+                <div class="product-left">
+                    <img src="{{ product.image_url|default:'/static/tracker/images/placeholder.png' }}" alt="{{ product.name }}" class="product-image">
+                </div>
+                <div class="product-right">
+                    <div class="product-details">
+                        <h4>{{ product.name }}</h4>
+                        <div class="product-rating">
+                            <img src="/static/tracker/images/{{ product.store }}-logo2.png" alt="{{ product.store|title }} Logo" class="store-logo">
+                            <span class="rating">
+                                <span>{{ product.rating|default:"N/A" }}</span>
+                            </span>
+                        </div>
+                        <div class="price">₹ {{ latest_price.price|floatformat:2|default:"N/A" }}</div>
+                        <div class="last-updated">Last updated: {{ latest_price.scraped_at|timesince }} ago</div>
+                        <button onclick="window.open('{{ product.url }}', '_blank')" class="buy-button">
+                            <i class="fas fa-shopping-cart"></i> Buy on {{ product.store|title }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% if product.description %}
+            <div class="product-description-container">
+                <div class="product-description">
+                    <h3>Product Description</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="box-container">
+        <div class="price-section box">
+            <div class="price-summary">
+                <span><span class="lowest-price">⬇ Current Price</span> <span class="lowest-price-value">₹{{ latest_price.price|floatformat:2|default:"N/A" }}</span></span>
+            </div>
+            <h3>{{ product.store|title }} Price History</h3>
+            <div class="chart-container">
+                <canvas id="priceChart" data-price-history='{{ price_history|safe }}'></canvas>
+            </div>
+            <div class="price-prediction-section">
+                <div class="price-prediction-header">
+                    <h3>Smart Buy™ Recommendation</h3>
+                    <div class="prediction-badge">AI Powered</div>
+                </div>
+                <p>Select a prediction timeframe to find the optimal purchase window:</p>
+                <div class="prediction-controls">
+                    <div class="time-period-selector">
+                        <button class="period-btn active" data-period="1">1 Month</button>
+                        <button class="period-btn" data-period="3">3 Months</button>
+                        <button class="period-btn" data-period="5">5 Months</button>
+                    </div>
+                    <button onclick="predictBestBuyTime()" class="predict-btn">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Generate Prediction</span>
+                    </button>
+                </div>
+                <div id="predictedPriceResult" class="predicted-price-result">
+                    {% if predictions and predictions_generated %}
+                        <div class="predicted-dates">
+                            <h4>Smart Buy™ Recommendations</h4>
+                            <ul class="price-prediction-list">
+                                {% for pred in predictions|slice:":3" %}
+                                    <li {% if forloop.first %}class="optimal"{% endif %}>
+                                        <div class="prediction-info">
+                                            <span class="prediction-date">{{ pred.date }}</span>
+                                            {% if forloop.first %}<span class="optimal-badge">BEST PRICE</span>{% endif %}
+                                        </div>
+                                        <span class="prediction-price">₹{{ pred.price|floatformat:2 }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% if predictions.0 %}
+                                <div class="prediction-summary">
+                                    <div class="summary-stat">
+                                        <span class="summary-label">Best buy on</span>
+                                        <span class="summary-value">{{ predictions.0.date }}</span>
+                                    </div>
+                                    <div class="summary-stat">
+                                        <span class="summary-label">Estimated savings</span>
+                                        <span class="summary-value">₹{{ predictions.0.price|floatformat:2 }}</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="prediction-placeholder">
+                            <i class="fas fa-chart-line prediction-icon"></i>
+                            <p>Select a timeframe and generate a prediction to see the best time to buy</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box-container">
+        <div class="reviews-section box">
+            <h3>Reviews</h3>
+            <p><strong>Customers says </strong></p>
+            <p>{{ review_analysis.summary|default:"No reviews available." }}</p>
+            <div class="review-tags">{{ review_analysis.pros}}</div>
+            <div class="review-tags">{{ review_analysis.cons }}</div>
+        </div>
+    </div>
+
+    <script src="{% static 'tracker/js/auth.js' %}"></script>
+    <script src="{% static 'tracker/js/Product_page.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize authentication
+            checkAuthStatus();
+
+            // Wait for auth.js to load before adding event listeners
+            setTimeout(() => {
+                const loginBtn = document.querySelector('.login');
+                const registerBtn = document.querySelector('.register');
+                const profileIcon = document.getElementById("profileIcon");
+
+                if (loginBtn) loginBtn.addEventListener('click', openLoginModal);
+                if (registerBtn) registerBtn.addEventListener('click', openRegisterModal);
+                if (profileIcon) profileIcon.addEventListener('click', toggleProfileOptions);
+            }, 100); // Small delay to ensure auth.js is loaded
+        });
+    </script>
+</body>
+</html>

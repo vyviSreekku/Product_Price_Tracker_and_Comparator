@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Prices - WatchThatPrice</title>
+    <link rel="stylesheet" href="{% static 'tracker/css/styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="track-header">
+        <nav class="header-nav">
+            <div class="header-left">
+                <h1 class="title_name">WatchThatPrice</h1>
+                <div class="search-bar">
+                    <input type="text" class="search__input" id="track-search-input" placeholder="Search for a product to track...">
+                    <button class="search__button" id="track-search-btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div class="header-links">
+                <a href="{% url 'index' %}" class="nav-button">Home</a>
+                <a href="{% url 'track' %}" class="nav-button active">Track</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="track-section">
+            
+            <div id="search-results" class="search-results"></div>
+            <h3 class="tracked-title">Tracked Products</h3>
+            <div id="tracked-products" class="tracked-products-container"></div>
+            <!-- Price History Modal -->
+            <div id="price-history-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h3 id="modal-product-title"></h3>
+                    <div class="chart-container">
+                        <canvas id="price-history-chart"></canvas>
+                    </div>
+                    <div id="price-stats" class="price-stats"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="{% static 'tracker/js/track.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">  <title>WatchThatPrice - Track Prices Across Ecommerce</title>
+  <link rel="stylesheet" href="{% static 'tracker/css/styles_home_new.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo-container">
+      <h1>WatchThatPrice</h1>
+    </div>
+    <nav class="main-nav">
+      <a href="{% url 'index' %}" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+      <a href="#features" class="nav-link"><i class="fas fa-star"></i> Features</a>
+      <a href="#stores" class="nav-link"><i class="fas fa-store"></i> Stores</a>
+    </nav>
+    <div class="user-actions" id="topRightContainer">
+      <a href="#" class="login-btn" onclick="openLoginModal()"><i class="fas fa-sign-in-alt"></i> Login</a>
+      <a href="#" class="register-btn" onclick="openRegisterModal()"><i class="fas fa-user-plus"></i> Register</a>
+        <div id="profileIcon" style="display: none;">
+        <i class="fas fa-user-circle"></i>
+        <span class="profile-display"></span>
+        <i class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: -5px;"></i>
+      </div>
+
+      <div id="profileOptions" class="profile-options" style="display: none;">
+        <div class="profile-info">
+          <span class="profile-name"></span>
+          <span class="profile-email"></span>
+        </div>
+        <div class="profile-menu">
+          <a href="/profile" class="profile-link">
+            <i class="fas fa-user"></i>
+            My Profile
+          </a>
+          <a href="#" onclick="signOut()" class="profile-link">
+            <i class="fas fa-sign-out-alt"></i>
+            Sign Out
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Track Prices <span class="accent">Effortlessly</span></h1>
+      <p class="hero-subtitle">Get the best deals across multiple e-commerce platforms</p>
+      
+      <div class="search-container">
+        <div class="search-box">
+          <span class="search-icon">
+            <i class="fas fa-search"></i>
+          </span> 
+          <input type="text" id="searchInput" placeholder="Search for products (e.g., iPhone 15, Samsung TV, Headphones)">
+          <button class="search-button" onclick="search()">SEARCH</button>
+        </div>
+      </div>
+      
+      <div class="featured-in">
+        <p>Track products from:</p>
+        <div class="store-logos">
+          <a href="https://www.amazon.in" target="_blank" class="store-logo">
+            <img src="{% static 'tracker/images/amazon-logo.png' %}" alt="Amazon">
+          </a>
+          <a href="https://www.flipkart.com" target="_blank" class="store-logo">
+            <img src="{% static 'tracker/images/flipkart-logo.png' %}" alt="Flipkart">
+          </a>
+          <a href="https://www.jiomart.com" target="_blank" class="store-logo">
+            <img src="{% static 'tracker/images/reliance-logo.png' %}" alt="Reliance">
+          </a>
+          <a href="https://www.croma.com" target="_blank" class="store-logo">
+            <img src="{% static 'tracker/images/croma-logo.png' %}" alt="Croma">
+          </a>
+        </div>      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section">
+    <div class="section-header">
+      <h2>Why Choose WatchThatPrice?</h2>
+      <p>Smart tools to help you save money and make informed decisions</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Price History</h3>
+        <p>See how prices have changed over time with detailed price history charts for any product</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bell"></i>
+        </div>
+        <h3>Price Alerts</h3>
+        <p>Set custom price alerts and get notified when prices drop to your desired level</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-search-dollar"></i>
+        </div>
+        <h3>Price Comparison</h3>
+        <p>Compare prices across multiple stores to find the best deals every time</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-brain"></i>
+        </div>
+        <h3>Price Predictions</h3>
+        <p>Use AI-powered price predictions to determine the best time to buy</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stores Section -->
+  <section id="stores" class="stores-section">
+    <div class="section-header">
+      <h2>Supported Stores</h2>
+      <p>We track prices across major e-commerce platforms</p>
+    </div>
+    
+    <div class="stores-grid">
+      <div class="store-card">
+        <img src="{% static 'tracker/images/amazon-logo.png' %}" alt="Amazon">
+        <h3>Amazon</h3>
+        <p>Wide selection of products with frequent deals and discounts</p>
+      </div>
+      
+      <div class="store-card">
+        <img src="{% static 'tracker/images/flipkart-logo.png' %}" alt="Flipkart">
+        <h3>Flipkart</h3>
+        <p>Great for electronics, fashion, and seasonal sales events</p>
+      </div>
+      
+      <div class="store-card">
+        <img src="{% static 'tracker/images/reliance-logo.png' %}" alt="Reliance Digital">
+        <h3>JioMart</h3>
+        <p>Competitive prices on appliances and electronics</p>
+      </div>
+      
+      <div class="store-card">
+        <img src="{% static 'tracker/images/croma-logo.png' %}" alt="Croma">
+        <h3>Croma</h3>
+        <p>Specialized in electronics with expert customer service</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Ready to start saving?</h2>
+    <p>Create a free account and begin tracking product prices today</p>
+    <button class="cta-button" onclick="openRegisterModal()">Get Started Now</button>
+  </section>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+
+      <h2>Login to Your Account</h2>
+      <p class="modal-subtitle">Track prices and get notifications for your favorite products</p>
+
+      <div class="input-group">
+        <label for="loginEmail"><i class="fas fa-envelope"></i></label>
+        <input type="email" id="loginEmail" placeholder="Email address" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="loginPassword"><i class="fas fa-lock"></i></label>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+      </div>
+
+      <button class="modal-btn login-btn" onclick="login()">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+      
+      <p class="modal-footer">Don't have an account? <a href="#" onclick="switchToRegister()">Register here</a></p>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
+
+      <h2>Create Your Account</h2>
+      <p class="modal-subtitle">Join thousands of smart shoppers saving money</p>
+
+      <div class="input-group">
+        <label for="registerName"><i class="fas fa-user"></i></label>
+        <input type="text" id="registerName" placeholder="Full name" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="registerEmail"><i class="fas fa-envelope"></i></label>
+        <input type="email" id="registerEmail" placeholder="Email address" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="registerPassword"><i class="fas fa-lock"></i></label>
+        <input type="password" id="registerPassword" placeholder="Create a password" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="registerConfirmPassword"><i class="fas fa-check-circle"></i></label>
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm password" required>
+      </div>
+
+      <button class="modal-btn register-btn" onclick="register()">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+      
+      <p class="modal-footer">Already have an account? <a href="#" onclick="switchToLogin()">Login here</a></p>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <h2>WatchThatPrice</h2>
+        <p>Real-time price tracking, historical trends, and smart alerts — all in one place.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-column">
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Resources</h3>
+          <ul>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 WatchThatPrice. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </footer>
+  <!-- Application Scripts -->
+  <script src="{% static 'tracker/js/auth.js' %}"></script>
+  <script src="{% static 'tracker/js/script_home.js' %}"></script>
+  <script>
+    // Function to switch between modals
+    function switchToRegister() {
+      closeLoginModal();
+      openRegisterModal();
+    }
+    
+    function switchToLogin() {
+      closeRegisterModal();
+      openLoginModal();
+    }
+    
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    // Highlight active nav item on scroll
+    window.addEventListener('scroll', function() {
+      const sections = document.querySelectorAll('section');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop - sectionHeight / 3) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }        if (current === '' && link.getAttribute('href').includes('index')) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

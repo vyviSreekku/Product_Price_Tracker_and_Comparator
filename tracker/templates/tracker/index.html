@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchThatPrice</title>
+    <link rel="stylesheet" href="{% static 'tracker/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="header-nav">
+            <div class="header-left">
+                <h1 class="title_name">WatchThatPrice</h1>
+                <div class="search-bar">
+                    <input type="text" class="search__input" placeholder="Search for product...">
+                    <button type="submit" class="search__button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="header-right">
+                <button onclick="window.location.href='/track/'" class="track-nav-button">Track Prices</button>
+                <a href="#" class="login" onclick="openLoginModal()">Login</a>
+                <span class="separator login-separator"></span>
+                <a href="#" class="register" onclick="openRegisterModal()">Register</a>
+                <div id="profileIcon" style="display: none;">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="profile-display"></span>
+                </div>
+                <div id="profileOptions" class="profile-options" style="display: none;">
+                    <div class="profile-info">
+                        <span class="profile-name"></span>
+                        <span class="profile-email"></span>
+                    </div>
+                    <div class="profile-menu">
+                        <a href="/profile" class="profile-link">
+                            <i class="fas fa-user"></i>
+                            My Profile
+                        </a>
+                        <a href="#" onclick="signOut()" class="profile-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="filters">
+            <button class="clear-filters">Clear all filters</button>
+            <div class="results-count">About <span id="count">0</span> results (<span id="time">0</span> seconds)</div>
+            
+            <div class="filter-group">
+                <h3>Price</h3>
+                <div class="price-range">
+                    <input type="number" placeholder="Min">
+                    <span>-</span>
+                    <input type="number" placeholder="Max">
+                    <button class="go-btn">Go</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h3>Store</h3>
+                <div class="store-filters">
+                    <!-- These will be populated dynamically -->
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h3>Category</h3>
+                <div class="category-filters">
+                    <!-- These will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <div class="product-grid" id="results-container">
+            <!-- Products will be inserted here -->
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+
+            <h2>Login</h2>
+
+            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+
+            <button class="login-btn" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
+
+            <h2>Register</h2>
+
+            <input type="text" id="registerName" class="register-input" placeholder="Enter your name" required>
+            <input type="email" id="registerEmail" class="register-input" placeholder="Enter your email" required>
+            <input type="password" id="registerPassword" class="register-input" placeholder="Create a password" required>
+            <input type="password" id="registerConfirmPassword" class="register-input" placeholder="Confirm password" required>
+            <button class="register-btn" onclick="register()">Register</button>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="{% static 'tracker/js/auth.js' %}"></script>
+    <script src="{% static 'tracker/js/scripts.js' %}"></script>
+</body>
+</html>

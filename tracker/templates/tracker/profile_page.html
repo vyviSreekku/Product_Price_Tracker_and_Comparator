@@ -1,0 +1,893 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PriceTrack - Profile</title>
+  <link rel="stylesheet" href="{% static 'tracker/css/profile_page.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>WatchThatPrice</h1>
+    <nav>
+      <a href="#" id="nav-profile" class="active">Profile</a>
+    </nav>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="user-profile-container">
+        <div class="profile-pic-container">
+          <input type="file" id="profile-pic-input" accept="image/*" style="display: none;">
+          <img src="{% static 'tracker/images/profile-icon.png' %}" alt="User Profile" id="profile-image" class="profile-pic">
+          <div class="upload-overlay" id="upload-overlay">
+            <i class="fas fa-camera"></i>
+            <span>Change</span>
+          </div>
+        </div>
+        <h3>{{ user_data.name }}</h3>
+        {% if user_data.is_premium %}
+        <div class="badge premium-badge">
+          <i class="fas fa-crown"></i> Premium Member
+        </div>
+        {% endif %}
+      </div>
+
+      <ul class="sidebar-menu">
+        <li><a href="#" id="menu-profile" class="active"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="#" id="menu-saved"><i class="fas fa-bookmark"></i> Saved Products</a></li>
+        <li><a href="#" id="menu-alerts"><i class="fas fa-bell"></i> Alerts</a></li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <main class="main-content">
+      <!-- Profile Section -->
+      <section id="profile-section" class="content-section active">
+        <div class="section-header">
+          <h2><i class="fas fa-user-circle"></i> Profile Information</h2>
+        </div>
+        
+        <div class="info-cards-container">
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i class="fas fa-id-card"></i>
+            </div>
+            <div class="info-card-content">
+              <h3>Full Name</h3>
+              <div class="editable-field">
+                <p id="name-display">{{ user_data.name }}</p>
+                <input type="text" id="name-input" class="edit-input" value="{{ user_data.name }}" style="display: none;">
+                <button class="edit-field-btn" onclick="toggleEdit('name')"><i class="fas fa-pen"></i> </button>
+                <button class="save-field-btn" onclick="saveChanges('name')" style="display: none;"><i class="fas fa-save"></i> Save</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="info-card-content">
+              <h3>Email</h3>
+              <div class="editable-field">
+                <p id="email-display">{{ user_data.email }}</p>
+                <input type="email" id="email-input" class="edit-input" value="{{ user_data.email }}" style="display: none;">
+                <button class="edit-field-btn" onclick="toggleEdit('email')"><i class="fas fa-pen"></i> </button>
+                <button class="save-field-btn" onclick="saveChanges('email')" style="display: none;"><i class="fas fa-save"></i> Save</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="info-card-content">
+              <h3>Member Since</h3>
+              <p>{{ user_data.date_joined|date:"F j, Y" }}</p>
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-card-icon">
+              <i class="fas fa-crown"></i>
+            </div>
+            <div class="info-card-content">
+              <h3>Account Type</h3>
+              <p>{% if user_data.is_premium %}Premium{% else %}Standard{% endif %}</p>
+            </div>
+          </div>
+        </div>        <div class="profile-actions" style="text-align: right; margin-top: 20px;">
+          <button id="save-profile-btn" onclick="saveAllChanges()" style="display: none;">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="section-header">
+          <h2><i class="fas fa-cog"></i> Account Settings</h2>
+        </div>
+        
+        <div class="settings-container">
+          <!-- Account Settings -->
+          <div class="settings-card">
+            <h3><i class="fas fa-shield-alt"></i> Account Security & Management</h3>
+            <div class="settings-list">
+              <div class="settings-item">
+                <div>
+                  <h4>Password Management</h4>
+                  <p>Update your account password</p>
+                </div>
+                <button class="btn-outline btn-primary btn-with-icon">
+                  <i class="fas fa-key"></i>
+                  <span>Change Password</span>
+                </button>
+              </div>
+              
+              <div class="settings-item danger-zone">
+                <div>
+                  <h4>Account Deletion</h4>
+                  <p>Permanently delete your account and all data</p>
+                </div>
+                <button class="btn-outline btn-danger btn-with-icon">
+                  <i class="fas fa-user-slash"></i>
+                  <span>Delete Account</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Notification Settings -->
+          <div class="settings-card">
+            <h3><i class="fas fa-bell"></i> Notification Settings</h3>
+            <div class="settings-list">
+              <div class="settings-item">
+                <div>
+                  <h4>Email Notifications</h4>
+                  <p>Receive price drop alerts via email</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="settings-item">
+                <div>
+                  <h4>Push Notifications</h4>
+                  <p>Receive notifications on your browser</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="settings-item">
+                <div>
+                  <h4>Price Drop Threshold</h4>
+                  <p>Minimum price drop percentage to notify</p>
+                </div>
+                <select class="form-control select-sm">
+                  <option>5%</option>
+                  <option selected>10%</option>
+                  <option>15%</option>
+                  <option>20%</option>
+                </select>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </section>
+
+      <!-- Saved Products Section -->
+      <section id="saved-products-section" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-bookmark"></i> Saved Products</h2>
+          <div class="filter-controls">
+            <input type="text" placeholder="Search products..." class="search-input">
+            <select class="sort-select">
+              <option value="recent">Recently Added</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="saved-products-grid">
+          <!-- Product 1 -->
+          <div class="product-card">
+            <div class="product-badge">Best Seller</div>
+            <div class="product-image">
+              <img src="iphone-14-pro.png" alt="iPhone 14 Pro">
+            </div>
+            <div class="product-details">
+              <h3>iPhone 14 Pro</h3>
+              <div class="product-price">
+                <span class="current-price">₹74700</span>
+                <span class="original-price">₹83000</span>
+              </div>
+              <div class="product-stats">
+                <div>
+                  <small>Lowest Price</small>
+                  <p>₹74700 (Current)</p>
+                </div>
+                <div>
+                  <small>Store</small>
+                  <p>Apple Store</p>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions">
+              <div class="product-action-info">
+                <img src="iphone-14-pro-icon.png" alt="iPhone 14 Pro Icon" class="action-icon">
+                <span class="action-detail">4.8 ★ (1.2K reviews)</span>
+              </div>
+              <button class="btn-primary"><i class="fas fa-bell"></i> Track Price</button>
+              <button class="btn-outline"><i class="fas fa-external-link-alt"></i> Visit</button>
+            </div>
+          </div>
+          
+          <!-- Product 2 -->
+          <div class="product-card">
+            <div class="product-badge sale">Sale</div>
+            <div class="product-image">
+              <img src="samsung-galaxy-s23.png" alt="Samsung Galaxy S23">
+            </div>
+            <div class="product-details">
+              <h3>Samsung Galaxy S23</h3>
+              <div class="product-price">
+                <span class="current-price">₹66400</span>
+                <span class="original-price">₹74700</span>
+              </div>
+              <div class="product-stats">
+                <div>
+                  <small>Lowest Price</small>
+                  <p>₹62250 (2 weeks ago)</p>
+                </div>
+                <div>
+                  <small>Store</small>
+                  <p>Best Buy</p>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions">
+              <div class="product-action-info">
+                <img src="samsung-galaxy-s23-icon.jpg" alt="Samsung Galaxy S23 Icon" class="action-icon">
+                <span class="action-detail">4.6 ★ (900 reviews)</span>
+              </div>
+              <button class="btn-primary"><i class="fas fa-bell"></i> Track Price</button>
+              <button class="btn-outline"><i class="fas fa-external-link-alt"></i> Visit</button>
+            </div>
+          </div>
+          
+          <!-- Product 3 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="sony-wh-1000xm5.png" alt="Sony WH-1000XM5">
+            </div>
+            <div class="product-details">
+              <h3>Sony WH-1000XM5</h3>
+              <div class="product-price">
+                <span class="current-price">₹29050</span>
+                <span class="original-price">₹33200</span>
+              </div>
+              <div class="product-stats">
+                <div>
+                  <small>Lowest Price</small>
+                  <p>₹27390 (1 month ago)</p>
+                </div>
+                <div>
+                  <small>Store</small>
+                  <p>Amazon</p>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions">
+              <div class="product-action-info">
+                <img src="sony-wh-1000xm5-icon.jpg" alt="Sony WH-1000XM5 Icon" class="action-icon">
+                <span class="action-detail">4.9 ★ (2K reviews)</span>
+              </div>
+              <button class="btn-primary"><i class="fas fa-bell"></i> Track Price</button>
+              <button class="btn-outline"><i class="fas fa-external-link-alt"></i> Visit</button>
+            </div>
+          </div>
+          
+          <!-- Product 4 -->
+          <div class="product-card">
+            <div class="product-badge deal">Deal</div>
+            <div class="product-image">
+              <img src="macbook-pro-m2.png" alt="MacBook Pro M2">
+            </div>
+            <div class="product-details">
+              <h3>MacBook Pro M2</h3>
+              <div class="product-price">
+                <span class="current-price">₹107900</span>
+                <span class="original-price">₹124500</span>
+              </div>
+              <div class="product-stats">
+                <div>
+                  <small>Lowest Price</small>
+                  <p>₹99600 (Black Friday)</p>
+                </div>
+                <div>
+                  <small>Store</small>
+                  <p>Amazon</p>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions">
+              <div class="product-action-info">
+                <img src="macbook-pro-m2-icon.jpg" alt="MacBook Pro M2 Icon" class="action-icon">
+                <span class="action-detail">4.7 ★ (1.5K reviews)</span>
+              </div>
+              <button class="btn-primary"><i class="fas fa-bell"></i> Track Price</button>
+              <button class="btn-outline"><i class="fas fa-external-link-alt"></i> Visit</button>
+            </div>
+          </div>
+          
+          <!-- Product 5 -->
+          <div class="product-card">
+            <div class="product-image">
+              <img src="ipad-air-2022.png" alt="iPad Air (2022)">
+            </div>
+            <div class="product-details">
+              <h3>iPad Air (2022)</h3>
+              <div class="product-price">
+                <span class="current-price">₹49800</span>
+              </div>
+              <div class="product-stats">
+                <div>
+                  <small>Lowest Price</small>
+                  <p>₹45650 (3 months ago)</p>
+                </div>
+                <div>
+                  <small>Store</small>
+                  <p>Target</p>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions">
+              <div class="product-action-info">
+                <img src="ipad-air-2022-icon.jpg" alt="iPad Air (2022) Icon" class="action-icon">
+                <span class="action-detail">4.5 ★ (800 reviews)</span>
+              </div>
+              <button class="btn-primary"><i class="fas fa-bell"></i> Track Price</button>
+              <button class="btn-outline"><i class="fas fa-external-link-alt"></i> Visit</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alerts Section -->
+      <section id="alerts-section" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-bell"></i> Price Alerts</h2>
+        </div>
+        
+        <div class="alerts-list">
+          <div class="alert-card">
+            <div class="alert-info">
+              <h3>iPhone 14</h3>
+              <p>Target Price: ₹70000</p>
+              <p class="status waiting">Waiting for price drop</p>
+            </div>
+            <div class="alert-actions">
+              <button class="btn-action edit"><i class="fas fa-pen"></i> Edit</button>
+              <button class="btn-action remove"><i class="fas fa-trash"></i> Remove</button>
+            </div>
+          </div>
+          
+          <div class="alert-card">
+            <div class="alert-info">
+              <h3>Samsung Galaxy S23</h3>
+              <p>Target Price: ₹65000</p>
+              <p class="status achieved">Price target achieved</p>
+            </div>
+            <div class="alert-actions">
+              <button class="btn-action edit"><i class="fas fa-pen"></i> Edit</button>
+              <button class="btn-action remove"><i class="fas fa-trash"></i> Remove</button>
+            </div>
+          </div>
+        </div>
+        
+        <button class="add-alert-button"><i class="fas fa-plus"></i> Add New Alert</button>
+      </section>
+
+
+    </main>
+  </div>
+
+  <script src="{% static 'tracker/js/profile_page.js' %}"></script>
+  <script>
+    let hasUnsavedChanges = false;
+
+    function toggleEdit(field) {
+      const displayElement = document.getElementById(`${field}-display`);
+      const inputElement = document.getElementById(`${field}-input`);
+      const editButton = document.querySelector(`[onclick="toggleEdit('${field}')"]`);
+      
+      if (displayElement.style.display !== 'none') {
+        // Switch to edit mode
+        displayElement.style.display = 'none';
+        inputElement.style.display = 'block';
+        editButton.innerHTML = '<i class="fas fa-times"></i> ';
+        inputElement.focus();
+        
+        // Show the save changes button
+        document.getElementById('save-profile-btn').style.display = 'inline-block';
+        hasUnsavedChanges = true;
+      } else {
+        // Switch back to display mode
+        displayElement.style.display = 'block';
+        inputElement.style.display = 'none';
+        editButton.innerHTML = '<i class="fas fa-pen"></i> ';
+        
+        // Reset the input value
+        inputElement.value = displayElement.textContent;
+        
+        // Hide save button if no other fields are being edited
+        if (!isAnyFieldInEditMode()) {
+          document.getElementById('save-profile-btn').style.display = 'none';
+          hasUnsavedChanges = false;
+        }
+      }
+    }
+
+    function isAnyFieldInEditMode() {
+      return document.getElementById('name-input').style.display === 'block' ||
+             document.getElementById('email-input').style.display === 'block';
+    }
+
+    function saveAllChanges() {
+      const nameInput = document.getElementById('name-input');
+      const emailInput = document.getElementById('email-input');
+      const nameDisplay = document.getElementById('name-display');
+      const emailDisplay = document.getElementById('email-display');
+
+      // Update the display values
+      if (nameInput.style.display === 'block') {
+        nameDisplay.textContent = nameInput.value;
+      }
+      if (emailInput.style.display === 'block') {
+        emailDisplay.textContent = emailInput.value;
+      }
+
+      // Reset all fields to display mode
+      document.querySelectorAll('.edit-field-btn').forEach(btn => {
+        btn.innerHTML = '<i class="fas fa-pen"></i> ';
+      });
+      document.querySelectorAll('.edit-input').forEach(input => {
+        input.style.display = 'none';
+      });
+      document.querySelectorAll('[id$="-display"]').forEach(display => {
+        display.style.display = 'block';
+      });
+
+      // Hide the save changes button
+      document.getElementById('save-profile-btn').style.display = 'none';
+      hasUnsavedChanges = false;
+
+      // Show success message
+      const notification = document.createElement('div');
+      notification.className = 'save-notification';
+      notification.innerHTML = '<i class="fas fa-check-circle"></i> Changes saved successfully!';
+      document.body.appendChild(notification);
+
+      // Remove notification after 3 seconds
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Profile Picture Change Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const profilePicContainer = document.querySelector('.profile-pic-container');
+      const profilePicInput = document.getElementById('profile-pic-input');
+      const profileImage = document.getElementById('profile-image');
+      let previewModal = null;
+
+      // Create preview modal
+      function createPreviewModal() {
+        const modal = document.createElement('div');
+        modal.className = 'profile-pic-preview';
+        modal.innerHTML = `
+          <div class="preview-container">
+            <img src="" alt="Preview">
+            <div class="preview-actions">
+              <button class="confirm-btn">
+                <i class="fas fa-check"></i> Confirm
+              </button>
+              <button class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        return modal;
+      }
+
+      // Handle profile picture click
+      profilePicContainer.addEventListener('click', function() {
+        profilePicInput.click();
+      });
+
+      // Handle file selection
+      profilePicInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = function(e) {
+            // Create preview modal if it doesn't exist
+            if (!previewModal) {
+              previewModal = createPreviewModal();
+            }
+
+            // Show preview
+            const previewImg = previewModal.querySelector('img');
+            previewImg.src = e.target.result;
+            previewModal.classList.add('active');
+
+            // Handle confirm button
+            previewModal.querySelector('.confirm-btn').onclick = function() {
+              profileImage.src = e.target.result;
+              previewModal.classList.remove('active');
+              
+              // Show success notification
+              const notification = document.createElement('div');
+              notification.className = 'save-notification';
+              notification.innerHTML = '<i class="fas fa-check-circle"></i> Profile picture updated successfully!';
+              document.body.appendChild(notification);
+              
+              setTimeout(() => {
+                notification.remove();
+              }, 3000);
+            };
+
+            // Handle cancel button
+            previewModal.querySelector('.cancel-btn').onclick = function() {
+              previewModal.classList.remove('active');
+              profilePicInput.value = ''; // Reset file input
+            };
+          };
+
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+
+      // Close preview modal when clicking outside
+      document.addEventListener('click', function(e) {
+        if (previewModal && e.target.classList.contains('profile-pic-preview')) {
+          previewModal.classList.remove('active');
+          profilePicInput.value = ''; // Reset file input
+        }
+      });
+    });
+  </script>
+  <style>
+    /* Enhanced Info Cards Container */
+    .info-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+
+    /* Enhanced Info Card */
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Enhanced Info Card Icon */
+    .info-card-icon {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      border-radius: 10px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .info-card-icon i {
+      font-size: 1.4rem;
+      color: white;
+    }
+
+    /* Enhanced Info Card Content */
+    .info-card-content {
+      flex-grow: 1;
+    }
+
+    .info-card-content h3 {
+      color: #1f2937;
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem 0;
+      font-weight: 600;
+    }
+
+    .info-card p {
+      color: #4b5563;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    /* Enhanced Editable Field */
+    .editable-field {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .edit-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease;
+      color: #1f2937;
+    }
+
+    .edit-input:focus {
+      border-color: #6366f1;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Enhanced Buttons */
+    .edit-field-btn,
+    .save-field-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .edit-field-btn {
+      /* background-color: #f3f4f6; */
+      color: #4b5563;
+    }
+
+    .edit-field-btn:hover {
+      /* background-color: #e5e7eb; */
+      color: #1f2937;
+    }
+
+    .save-field-btn {
+      background-color: #6366f1;
+      color: white;
+    }
+
+    .save-field-btn:hover {
+      background-color: #4f46e5;
+    }
+
+    /* Enhanced Section Header */
+    .section-header {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+    }
+
+    .section-header h2 {
+      color: #1f2937;
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-header h2 i {
+      color: #6366f1;
+      font-size: 1.75rem;
+    }
+
+    /* Enhanced Profile Actions */
+    .profile-actions {
+      padding: 1rem;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 1.5rem;
+    }
+
+    #save-profile-btn {
+      background: #6366f1;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    #save-profile-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+    }
+
+    /* Enhanced Notification */
+    .save-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #059669;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+      animation: slideIn 0.3s ease-out;
+      z-index: 1000;
+    }
+
+    .save-notification i {
+      font-size: 1.25rem;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Profile Picture Container Styles */
+    .profile-pic-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .profile-pic-container:hover {
+      transform: scale(1.02);
+    }
+
+    .profile-pic {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: filter 0.3s ease;
+    }
+
+    .profile-pic-container:hover .profile-pic {
+      filter: brightness(0.8);
+    }
+
+    .upload-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .profile-pic-container:hover .upload-overlay {
+      opacity: 1;
+    }
+
+    .upload-overlay i {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-overlay span {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Profile Picture Preview */
+    .profile-pic-preview {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .profile-pic-preview.active {
+      display: flex;
+    }
+
+    .preview-container {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .preview-container img {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 8px;
+    }
+
+    .preview-actions {
+      position: absolute;
+      bottom: -60px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .preview-actions button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .preview-actions button:hover {
+      transform: translateY(-2px);
+    }
+
+    .preview-actions .confirm-btn {
+      background: #6366f1;
+      color: white;
+    }
+
+    .preview-actions .cancel-btn {
+      background: #ef4444;
+      color: white;
+    }
+  </style>
+</body>
+</html>

@@ -163,9 +163,6 @@ This project is open for educational contributions. To contribute:
 4. Push to the branch: `git push origin feature-name`
 5. Submit a pull request
 
-## 📊 Project Demo
-
-[Video Demo Link - Coming Soon]
 
 ## ⚠️ Disclaimer
 
